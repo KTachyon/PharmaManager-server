@@ -1,0 +1,33 @@
+{
+  "name": "medi-farmacia",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive --reporter spec"
+  },
+  "author": "Tiago Fael Matos",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "express-mocks-http": "0.0.11",
+    "mocha": "^3.0.2",
+    "proxyquire": "^1.7.10",
+    "sinon": "^1.17.5"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "intel": "^1.1.1",
+    "lodash": "^4.15.0",
+    "moment": "^2.14.1",
+    "morgan": "^1.7.0",
+    "pg": "^6.1.0",
+    "pg-hstore": "^2.3.2",
+    "pg-native": "^1.10.0",
+    "rekuire": "^0.1.9",
+    "request": "^2.74.0",
+    "sequelize": "^3.24.2"
+  }
+}
