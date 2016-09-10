@@ -29,11 +29,11 @@ var PatientService = function(context) {
         },
 
         updatePatient : function(id, data) {
-            return Patient.update(data, { where : { id : id }, transaction : getTransaction() });
+            return Patient.update(data, { where : { id : id }, transaction : getTransaction() }); // TODO: update returns array of changed rows
         },
 
         deletePatient : function(id) {
-            return Patient.destroy({ where : { id : id }, transaction : getTransaction() });
+            return Patient.destroy({ where : { id : id }, transaction : getTransaction() });  // TODO: update returns deleted rows
         }
     };
 

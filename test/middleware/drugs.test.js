@@ -12,11 +12,9 @@ var DrugServicePath = rekuire.path('services/DrugService');
 
 describe('drugs middleware tests', function() {
     var DrugsMiddleware;
-    var drugServiceConstructorCall;
-    var DrugMapper;
     var DrugServiceInstance;
     var request, response;
-    var context = 'aContext', serviceResult = Promise.resolve('aServiceResult'), mappedResult = 'aMappedResult';
+    var serviceResult = Promise.resolve('aServiceResult'), mappedResult = 'aMappedResult';
     var drugID = 'aDrugID', requestBody = 'aRequestBody';
 
     beforeEach(function() {
@@ -25,13 +23,12 @@ describe('drugs middleware tests', function() {
         request = expressMocks.createRequest();
         response = expressMocks.createResponse();
 
-        request.context = context;
+        request.context = 'aContext';
 
         DrugServiceInstance = { };
 
-        DrugMapper = { map : sinon.stub().withArgs(serviceResult).returns(mappedResult) };
-
-        drugServiceConstructorCall = sinon.stub().withArgs(request.context).returns(DrugServiceInstance);
+        var DrugMapper = { map : sinon.stub().withArgs(serviceResult).returns(mappedResult) };
+        var drugServiceConstructorCall = sinon.stub().withArgs(request.context).returns(DrugServiceInstance);
 
         dependencyMocks[ DrugServicePath ] = drugServiceConstructorCall;
         dependencyMocks[ DrugMapperPath ] = DrugMapper;

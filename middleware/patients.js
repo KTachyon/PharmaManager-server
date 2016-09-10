@@ -5,6 +5,12 @@ var PatientMapper = rekuire('mappers/PatientMapper');
 var PatientsMiddleware = function() {
 
     return {
+        assignContextPatient : function(request, response, next) {
+            request.context.patient = request.params.id;
+
+            next();
+        },
+
         getAllPatients : function(request) {
         	return new PatientService(request.context).getAllPatients().then(function(patients) {
         		return PatientMapper.map(patients);

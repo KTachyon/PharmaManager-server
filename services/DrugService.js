@@ -29,11 +29,11 @@ var DrugService = function(context) {
         },
 
         updateDrug : function(id, data) {
-            return Drug.update(data, { where : { id : id }, transaction : getTransaction() });
+            return Drug.update(data, { where : { id : id }, transaction : getTransaction() }); // TODO: update returns array of changed rows
         },
 
         deleteDrug : function(id) {
-            return Drug.destroy({ where : { id : id }, transaction : getTransaction() });
+            return Drug.destroy({ where : { id : id }, transaction : getTransaction() });  // TODO: update returns deleted rows
         }
     };
 

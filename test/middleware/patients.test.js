@@ -12,11 +12,9 @@ var PatientServicePath = rekuire.path('services/PatientService');
 
 describe('patients middleware tests', function() {
     var PatientsMiddleware;
-    var patientServiceConstructorCall;
-    var PatientMapper;
     var PatientServiceInstance;
     var request, response;
-    var context = 'aContext', serviceResult = Promise.resolve('aServiceResult'), mappedResult = 'aMappedResult';
+    var serviceResult = Promise.resolve('aServiceResult'), mappedResult = 'aMappedResult';
     var patientID = 'aPatientID', requestBody = 'aRequestBody';
 
     beforeEach(function() {
@@ -25,13 +23,12 @@ describe('patients middleware tests', function() {
         request = expressMocks.createRequest();
         response = expressMocks.createResponse();
 
-        request.context = context;
+        request.context = 'aContext';
 
         PatientServiceInstance = { };
 
-        PatientMapper = { map : sinon.stub().withArgs(serviceResult).returns(mappedResult) };
-
-        patientServiceConstructorCall = sinon.stub().withArgs(request.context).returns(PatientServiceInstance);
+        var PatientMapper = { map : sinon.stub().withArgs(serviceResult).returns(mappedResult) };
+        var patientServiceConstructorCall = sinon.stub().withArgs(request.context).returns(PatientServiceInstance);
 
         dependencyMocks[ PatientServicePath ] = patientServiceConstructorCall;
         dependencyMocks[ PatientMapperPath ] = PatientMapper;
