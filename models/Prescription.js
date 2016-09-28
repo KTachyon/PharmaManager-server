@@ -25,7 +25,7 @@ var Prescription = db.define('Prescription', {
 		defaultValue : 1
 	},
 	properties : {
-		type : Sequelize.JSON
+		type : Sequelize.JSONB
 	}
 });
 

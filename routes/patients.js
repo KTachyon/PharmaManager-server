@@ -11,6 +11,8 @@ patientsRouter.put('/:id', Transactional(PatientsMiddleware.updatePatient));
 patientsRouter.post('/', Transactional(PatientsMiddleware.createPatient));
 patientsRouter.delete('/:id', Transactional(PatientsMiddleware.deletePatient));
 
+patientsRouter.post('/search', Transactional(PatientsMiddleware.searchPatients));
+
 patientsRouter.use('/:id/prescriptions', PatientsMiddleware.assignContextPatient, rekuire('routes/prescriptions'));
 patientsRouter.use('/:id/medication', PatientsMiddleware.assignContextPatient, rekuire('routes/medication'));
 

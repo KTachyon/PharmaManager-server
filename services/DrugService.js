@@ -20,8 +20,8 @@ var DrugService = function(context) {
             });
         },
 
-        searchDrug : function(searchTerms) {
-            // TODO: https://www.postgresql.org/docs/9.1/static/fuzzystrmatch.html
+        searchDrugs : function(searchTerms) {
+            return Drug.search(searchTerms, getTransaction());
         },
 
         createDrug : function(data) {

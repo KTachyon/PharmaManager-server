@@ -11,4 +11,6 @@ drugsRouter.put('/:id', Transactional(DrugsMiddleware.updateDrug));
 drugsRouter.post('/', Transactional(DrugsMiddleware.createDrug));
 drugsRouter.delete('/:id', Transactional(DrugsMiddleware.deleteDrug));
 
+drugsRouter.post('/search', Transactional(DrugsMiddleware.searchDrugs));
+
 module.exports = drugsRouter;

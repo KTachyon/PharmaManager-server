@@ -16,10 +16,10 @@ var Medication = db.define('Medication', {
 		allowNull : false
     },
     data : {
-        type : Sequelize.JSON,
+        type : Sequelize.JSONB,
     },
 	properties : {
-		type : Sequelize.JSON
+		type : Sequelize.JSONB
 	}
 }, {
 	name : {

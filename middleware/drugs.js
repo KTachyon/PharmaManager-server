@@ -6,15 +6,21 @@ var DrugsMiddleware = function() {
 
     return {
         getAllDrugs : function(request) {
-        	return new DrugService(request.context).getAllDrugs().then(function(drugs) {
-        		return DrugMapper.map(drugs);
-        	});
+            return new DrugService(request.context).getAllDrugs().then(function(drugs) {
+                return DrugMapper.map(drugs);
+            });
+        },
+
+        searchDrugs : function(request) {
+            return new DrugService(request.context).searchDrugs(request.body.searchTerms).then(function(drugs) {
+                return DrugMapper.map(drugs);
+            });
         },
 
         getDrug : function(request) {
             return new DrugService(request.context).getDrug(request.params.id).then(function(drug) {
-        		return DrugMapper.map(drug);
-        	});
+                return DrugMapper.map(drug);
+            });
         },
 
         createDrug : function(request) {
