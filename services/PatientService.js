@@ -1,7 +1,8 @@
 var rekuire = require('rekuire');
 var Patient = rekuire('models/Patient');
-var Prescription = rekuire('models/Prescription');
-var Medication = rekuire('models/Medication');
+var Posology = rekuire('models/Posology');
+var DrugStock = rekuire('models/DrugStock');
+var DrugBox = rekuire('models/DrugBox');
 var Drug = rekuire('models/Drug');
 
 var _ = require('lodash');
@@ -14,11 +15,18 @@ var PatientService = function(context) {
 
     return {
         includes : function() {
-            return [ Drug, Medication ];
+            return [ {
+                model : Posology,
+                include : [
+                    { model : Drug, required : true },
+                    DrugBox,
+                    DrugStock
+                ]
+            } ];
         },
 
         getAllPatients : function() {
-            return Patient.findAll({ include : this.includes(), transaction : getTransaction() });
+            return Patient.findAll({ transaction : getTransaction() });
         },
 
         getPatient : function(id) {
@@ -34,14 +42,12 @@ var PatientService = function(context) {
         },
 
         searchPatients : function(searchTerms) {
-            var self = this;
-
-            return Patient.search(searchTerms, getTransaction()).then(function(patients) {
+            return Patient.search(searchTerms, getTransaction()).then((patients) => {
                 var ids = _.map(patients, function(patient) {
                     return patient.get('id');
                 });
 
-                return Patient.findAll({ where : { id : ids }, include : self.includes(), transaction : getTransaction() });
+                return Patient.findAll({ where : { id : ids }, include : this.includes(), transaction : getTransaction() });
             });
         },
 

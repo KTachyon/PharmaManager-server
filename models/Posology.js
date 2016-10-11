@@ -6,14 +6,14 @@ var Sequelize = require('sequelize');
 var Patient = rekuire('models/Patient');
 var Drug = rekuire('models/Drug');
 
-var Prescription = db.define('Prescription', {
-	prescriptionDate : {
+var Posology = db.define('Posology', {
+	startDate : {
 		type : Sequelize.DATE,
 		allowNull : false
 	},
-	timeRange : {
-		type : Sequelize.INTEGER, // days?
-		allowNull : false // ok?
+	discontinueAt : {
+		type : Sequelize.DATE,
+		allowNull : true // false if no date limit exists (chronical)
 	},
 	intakeInterval : {
 		type : Sequelize.INTEGER, // hours
@@ -24,22 +24,18 @@ var Prescription = db.define('Prescription', {
 		allowNull : false,
 		defaultValue : 1
 	},
+	cancelled : {
+		type : Sequelize.BOOLEAN,
+		defaultValue : false,
+		allowNull : false
+	},
 	properties : {
 		type : Sequelize.JSONB
 	}
 });
 
 // These will be the primary unique key, no need to define a unique constraint
-Patient.belongsToMany(Drug, {
-	onDelete : 'CASCADE',
-    through: { model : Prescription },
-    foreignKey : { name: 'PatientId', allowNull : false }
-});
+Posology.hasOne(Patient);
+Posology.hasOne(Drug);
 
-Drug.belongsToMany(Patient, {
-	onDelete : 'CASCADE',
-    through: { model : Prescription },
-    foreignKey : { name: 'DrugId', allowNull : false }
-});
-
-module.exports = Prescription;
+module.exports = Posology;

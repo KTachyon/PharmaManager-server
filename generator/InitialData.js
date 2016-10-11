@@ -5,9 +5,18 @@ var Drug = rekuire('models/Drug');
 var _ = require('lodash');
 var Promise = require('bluebird');
 
-function generate(array) {
+function generatePatients(array) {
+    var count = 0;
+
     return _.map(array, function(name) {
-        return { name };
+        var id = ++count;
+        return { name, sns : id, nif : id };
+    });
+}
+
+function generateDrugs(array) {
+    return _.map(array, function(name) {
+        return { name, dose : 1, unit : 'mg' };
     });
 }
 
@@ -16,7 +25,7 @@ module.exports = function() {
     var drugs = rekuire('generator/drugs');
 
     return Promise.all([
-        Patient.bulkCreate( generate(names) ),
-        Drug.bulkCreate( generate(drugs) )
+        Patient.bulkCreate( generatePatients(names) ),
+        Drug.bulkCreate( generateDrugs(drugs) )
     ]);
 };

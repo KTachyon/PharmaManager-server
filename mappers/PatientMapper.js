@@ -17,6 +17,8 @@ var PatientMapper = function() {
 			var daoObject = {
 				id : patient.get('id'),
 				name : patient.get('name'),
+				sns : patient.get('sns'),
+				nif : patient.get('nif'),
 				properties : patient.get('properties')
 			};
 

@@ -13,6 +13,16 @@ var Patient = db.define('Patient', {
         type : Sequelize.STRING,
         allowNull : false
     },
+    nif : {
+        type : Sequelize.STRING,
+        allowNull : false,
+        unique : true
+    },
+    sns : {
+        type : Sequelize.STRING,
+        allowNull : false,
+        unique : true
+    },
     tokens : {
         type : Sequelize.ARRAY(Sequelize.STRING)
     },

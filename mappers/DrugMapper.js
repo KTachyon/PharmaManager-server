@@ -17,6 +17,8 @@ var DrugMapper = function() {
 			var daoObject = {
 				id : drug.get('id'),
 				name : drug.get('name'),
+				dose : drug.get('dose'),
+				unit : drug.get('unit'),
 				properties : drug.get('properties')
 			};
 

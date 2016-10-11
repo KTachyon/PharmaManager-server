@@ -13,6 +13,14 @@ var Drug = db.define('Drug', {
         type : Sequelize.STRING,
         allowNull : false
     },
+    dose : {
+        type : Sequelize.DOUBLE,
+        allowNull : false
+    },
+    unit : {
+        type : Sequelize.STRING,
+        allowNull : false
+    },
     tokens : {
         type : Sequelize.ARRAY(Sequelize.STRING)
     },

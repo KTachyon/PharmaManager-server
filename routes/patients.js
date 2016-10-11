@@ -13,7 +13,6 @@ patientsRouter.delete('/:id', Transactional(PatientsMiddleware.deletePatient));
 
 patientsRouter.post('/search', Transactional(PatientsMiddleware.searchPatients));
 
-patientsRouter.use('/:id/prescriptions', PatientsMiddleware.assignContextPatient, rekuire('routes/prescriptions'));
-patientsRouter.use('/:id/medication', PatientsMiddleware.assignContextPatient, rekuire('routes/medication'));
+patientsRouter.use('/:id/posology', PatientsMiddleware.assignContextPatient, rekuire('routes/posology'));
 
 module.exports = patientsRouter;
