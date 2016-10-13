@@ -9,11 +9,11 @@ var PosologyService = function(context) {
 
     return {
         getAllPosologyForPatient : function() {
-            return Posology.findAll({ where : { PatientId : context.patient }}, { transaction : getTransaction() });
+            return Posology.findAll({ where : { PatientId : context.patient }, transaction : getTransaction() });
         },
 
         getPosologyForPatient : function(drugID) {
-            return Posology.find({ where : { PatientId : context.patient, DrugId : drugID }}, { transaction : getTransaction() }).then(function(posology) {
+            return Posology.find({ where : { PatientId : context.patient, DrugId : drugID }, transaction : getTransaction() }).then(function(posology) {
                 if (!posology) { throw ErrorFactory.make('Posology not found', 404); }
 
                 return posology;

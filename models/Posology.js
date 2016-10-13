@@ -7,6 +7,11 @@ var Patient = rekuire('models/Patient');
 var Drug = rekuire('models/Drug');
 
 var Posology = db.define('Posology', {
+	id : {
+        type : Sequelize.UUID,
+        primaryKey : true,
+        defaultValue : Sequelize.UUIDV4
+    },
 	startDate : {
 		type : Sequelize.DATE,
 		allowNull : false
@@ -15,9 +20,10 @@ var Posology = db.define('Posology', {
 		type : Sequelize.DATE,
 		allowNull : true // false if no date limit exists (chronical)
 	},
-	intakeInterval : {
-		type : Sequelize.INTEGER, // hours
-		allowNull : false
+	intakeTimes : {
+		type : Sequelize.JSONB,
+		allowNull : false,
+		defaultValue : [ false, false, false, false ] // Breakfast, Lunch, Snack, Diner
 	},
 	intakeQuantity : {
 		type : Sequelize.FLOAT, // half to multiple pills?
@@ -35,7 +41,7 @@ var Posology = db.define('Posology', {
 });
 
 // These will be the primary unique key, no need to define a unique constraint
-Posology.hasOne(Patient);
+Patient.hasMany(Posology);
 Posology.hasOne(Drug);
 
 module.exports = Posology;

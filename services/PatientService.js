@@ -18,9 +18,9 @@ var PatientService = function(context) {
             return [ {
                 model : Posology,
                 include : [
-                    { model : Drug, required : true },
-                    DrugBox,
-                    DrugStock
+                    { model : Drug },
+                    { model : DrugBox },
+                    { model : DrugStock }
                 ]
             } ];
         },

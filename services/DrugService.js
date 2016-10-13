@@ -30,7 +30,7 @@ var DrugService = function(context) {
 
         updateDrug : function(id, data) {
             return Drug.update(data, { where : { id : id }, transaction : getTransaction() }).then(() => {
-                return this.getPatient(id);
+                return this.getDrug(id);
             }); // TODO: update returns array of changed rows
         },
 

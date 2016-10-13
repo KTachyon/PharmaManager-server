@@ -6,7 +6,7 @@ var PosologysMiddleware = function() {
 
     return {
         getAllPosology: function(request) {
-            return new PosologyService(request.context).getAllPosologysForPatient().then(function(posologies) {
+            return new PosologyService(request.context).getAllPosologyForPatient().then(function(posologies) {
                 return PosologyMapper.map(posologies);
             });
         },
