@@ -30,6 +30,10 @@ var Posology = db.define('Posology', {
 		allowNull : false,
 		defaultValue : 1
 	},
+	notes : {
+		type : Sequelize.TEXT,
+		allowNull : true
+	},
 	cancelled : {
 		type : Sequelize.BOOLEAN,
 		defaultValue : false,
@@ -41,7 +45,10 @@ var Posology = db.define('Posology', {
 });
 
 // These will be the primary unique key, no need to define a unique constraint
+Drug.hasMany(Posology);
 Patient.hasMany(Posology);
-Posology.hasOne(Drug);
+
+Posology.belongsTo(Drug);
+Posology.belongsTo(Patient);
 
 module.exports = Posology;

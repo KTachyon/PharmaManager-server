@@ -3,7 +3,8 @@ var db = rekuire('config/db');
 
 var Sequelize = require('sequelize');
 
-var Posology = rekuire('models/Posology');
+var Patient = rekuire('models/Patient');
+var Drug = rekuire('models/Drug');
 
 var DrugStock = db.define('DrugStock', {
     id : {
@@ -25,7 +26,10 @@ var DrugStock = db.define('DrugStock', {
 	}
 });
 
-DrugStock.belongsTo(Posology);
-Posology.hasOne(DrugStock);
+Drug.hasMany(DrugStock);
+Patient.hasMany(DrugStock);
+
+DrugStock.belongsTo(Drug);
+DrugStock.belongsTo(Patient);
 
 module.exports = DrugStock;

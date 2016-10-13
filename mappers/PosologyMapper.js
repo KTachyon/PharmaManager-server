@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var rekuire = require('rekuire');
+var DrugMapper = rekuire('mappers/DrugMapper');
 
 var PosologyMapper = function() {
 
@@ -19,11 +21,12 @@ var PosologyMapper = function() {
 
         mapSingle: function(posology) {
             var daoObject = {
-                drugID: posology.get('DrugId'),
-                patientID: posology.get('PatientId'),
+                id : posology.get('id'),
+                drug: DrugMapper.map(posology.Drug),
+                PatientID: posology.get('PatientId'),
                 startDate: posology.get('posologyDate'),
                 timeRange: posology.get('timeRange'),
-                intakeInterval: posology.get('intakeInterval'),
+                intakeTimes: posology.get('intakeTimes'),
                 intakeQuantity: posology.get('intakeQuantity'),
                 properties: posology.get('properties')
             };

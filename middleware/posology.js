@@ -5,32 +5,26 @@ var PosologyMapper = rekuire('mappers/PosologyMapper');
 var PosologysMiddleware = function() {
 
     return {
-        getAllPosology: function(request) {
-            return new PosologyService(request.context).getAllPosologyForPatient().then(function(posologies) {
+        getPosology: function(request) {
+            return new PosologyService(request.context).getAllPosology().then(function(posologies) {
                 return PosologyMapper.map(posologies);
             });
         },
 
-        getPosology: function(request) {
-            return new PosologyService(request.context).getPosologyForPatient(request.params.drug_id).then(function(posology) {
-                return PosologyMapper.map(posology);
-            });
-        },
-
         createPosology: function(request) {
-            return new PosologyService(request.context).createPosologyForPatient(request.params.drug_id, request.body).then(function(posology) {
+            return new PosologyService(request.context).createPosology(request.body).then(function(posology) {
                 return PosologyMapper.map(posology);
             });
         },
 
         updatePosology: function(request) {
-            return new PosologyService(request.context).updatePosologyForPatient(request.params.drug_id, request.body).then(function(posology) {
+            return new PosologyService(request.context).updatePosology(request.params.id, request.body).then(function(posology) {
                 return PosologyMapper.map(posology);
             });
         },
 
         deletePosology: function(request) {
-            return new PosologyService(request.context).deletePosologyForPatient(request.params.drug_id).thenReturn({});
+            return new PosologyService(request.context).deletePosology(request.params.id).thenReturn({});
         }
     };
 

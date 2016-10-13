@@ -1,10 +1,5 @@
 var rekuire = require('rekuire');
 var Patient = rekuire('models/Patient');
-var Posology = rekuire('models/Posology');
-var DrugStock = rekuire('models/DrugStock');
-var DrugBox = rekuire('models/DrugBox');
-var Drug = rekuire('models/Drug');
-
 var _ = require('lodash');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
@@ -14,17 +9,6 @@ var PatientService = function(context) {
     var getTransaction = context.getTransaction;
 
     return {
-        includes : function() {
-            return [ {
-                model : Posology,
-                include : [
-                    { model : Drug },
-                    { model : DrugBox },
-                    { model : DrugStock }
-                ]
-            } ];
-        },
-
         getAllPatients : function() {
             return Patient.findAll({ transaction : getTransaction() });
         },
@@ -32,7 +16,6 @@ var PatientService = function(context) {
         getPatient : function(id) {
             return Patient.findOne({
                 where : { id : id },
-                include : this.includes(),
                 transaction : getTransaction()
             }).then(function(patient) {
                 if (!patient) { throw ErrorFactory.make('Patient not found', 404); }

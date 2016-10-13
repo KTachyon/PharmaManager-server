@@ -1,6 +1,6 @@
 var rekuire = require('rekuire');
 var Posology = rekuire('models/Posology');
-
+var Drug = rekuire('models/Drug');
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
 var PosologyService = function(context) {
@@ -8,34 +8,41 @@ var PosologyService = function(context) {
     var getTransaction = context.getTransaction;
 
     return {
-        getAllPosologyForPatient : function() {
-            return Posology.findAll({ where : { PatientId : context.patient }, transaction : getTransaction() });
+        getAllPosology : function() {
+            return Posology.findAll({ where : { PatientId : context.patient }, include : [ { model : Drug, required : true } ], transaction : getTransaction() });
         },
 
-        getPosologyForPatient : function(drugID) {
-            return Posology.find({ where : { PatientId : context.patient, DrugId : drugID }, transaction : getTransaction() }).then(function(posology) {
-                if (!posology) { throw ErrorFactory.make('Posology not found', 404); }
+        getPosology : function(id) {
+            return Posology.find({ where : { id : id }, include : [ { model : Drug, required : true } ], transaction : getTransaction() });
+        },
 
-                return posology;
+        createPosology : function(data) {
+            if (!data.DrugId) {
+                throw ErrorFactory.make('Posology requires a drug reference', 400);
+            }
+
+            data.startDate = data.startDate || new Date();
+            data.PatientId = context.patient;
+
+            return Posology.create(data, { transaction : getTransaction() }).then((posology) => {
+                return this.getPosology(posology.get('id'));
             });
         },
 
-        createPosologyForPatient : function(drugID, data) {
-            data.DrugId = drugID;
+        updatePosology : function(id, data) {
+            if (!data.DrugId) {
+                throw ErrorFactory.make('Posology requires a drug reference', 400);
+            }
+
             data.PatientId = context.patient;
 
-            return Posology.create(data, { transaction : getTransaction() });
+            return Posology.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }).then((posology) => {
+                return this.getPosology(posology.get('id'));
+            }); // TODO: update returns array of changed rows
         },
 
-        updatePosologyForPatient : function(drugID, data) {
-            data.DrugId = drugID;
-            data.PatientId = context.patient;
-
-            return Posology.update(data, { where : { PatientId : context.patient, DrugId : drugID }, transaction : getTransaction() }); // TODO: update returns array of changed rows
-        },
-
-        deletePosologyForPatient : function(drugID) {
-            return Posology.destroy({ where : { PatientId : context.patient, DrugId : drugID }, transaction : getTransaction() });  // TODO: update returns deleted rows
+        deletePosology : function(id) {
+            return Posology.destroy({ where : { PatientId : context.patient, id : id }, transaction : getTransaction() });  // TODO: update returns deleted rows
         }
     };
 
