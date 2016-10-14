@@ -1,5 +1,10 @@
 var _ = require('lodash');
 
+var rekuire = require('rekuire');
+var PosologyMapper = rekuire('mappers/PosologyMapper');
+var DrugBoxMapper = rekuire('mappers/DrugBoxMapper');
+var DrugStockMapper = rekuire('mappers/DrugStockMapper');
+
 var PatientMapper = function() {
 
 	return {
@@ -16,6 +21,9 @@ var PatientMapper = function() {
 		mapSingle: function(patient) {
 			var daoObject = {
 				id : patient.get('id'),
+				Posologies : patient.Posologies ? PosologyMapper.map(patient.Posologies) : undefined,
+				DrugBoxes : patient.DrugBoxes ? DrugBoxMapper.map(patient.DrugBoxes) : undefined,
+				DrugStocks : patient.DrugStocks ? DrugStockMapper.map(patient.DrugStocks) : undefined,
 				name : patient.get('name'),
 				sns : patient.get('sns'),
 				nif : patient.get('nif'),

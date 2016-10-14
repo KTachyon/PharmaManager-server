@@ -20,10 +20,7 @@ var DrugStock = db.define('DrugStock', {
         type : Sequelize.JSONB, // TODO: Register removed units / date, assumed box?
         allowNull : false,
         defaultValue : []
-    },
-	properties : {
-		type : Sequelize.JSONB
-	}
+    }
 });
 
 Drug.hasMany(DrugStock);
