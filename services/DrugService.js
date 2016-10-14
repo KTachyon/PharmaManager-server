@@ -3,6 +3,16 @@ var Drug = rekuire('models/Drug');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
+var sanitizeDrugInput = function(data, id) {
+    return {
+        id : id,
+        name : data.name,
+        dose : parseFloat(data.dose),
+        unit : data.unit,
+        properties : data.properties
+    };
+};
+
 var DrugService = function(context) {
 
     var getTransaction = context.getTransaction;
@@ -25,10 +35,12 @@ var DrugService = function(context) {
         },
 
         createDrug : function(data) {
-            return Drug.create(data, { transaction : getTransaction() });
+            return Drug.create(sanitizeDrugInput(data), { transaction : getTransaction() });
         },
 
         updateDrug : function(id, data) {
+            data = sanitizeDrugInput(data, id);
+
             return Drug.update(data, { where : { id : id }, transaction : getTransaction() }).then(() => {
                 return this.getDrug(id);
             }); // TODO: update returns array of changed rows

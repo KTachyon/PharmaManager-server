@@ -3,6 +3,23 @@ var Posology = rekuire('models/Posology');
 var Drug = rekuire('models/Drug');
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
+var sanitizePosologyInput = function(data, id) {
+    if (!data.DrugId) {
+        throw ErrorFactory.make('Posology requires a drug reference', 400);
+    }
+
+    return { // TODO: Cancelling
+        id : id,
+        startDate : data.startDate,
+        discontinueAt : data.discontinueAt,
+        intakeTimes : data.intakeTimes, // TODO: Validate array of 4 booleans
+        intakeQuantity : parseFloat(data.intakeQuantity),
+        notes : data.notes,
+        properties : data.properties,
+        DrugId : data.DrugId
+    };
+};
+
 var PosologyService = function(context) {
 
     var getTransaction = context.getTransaction;
@@ -17,10 +34,7 @@ var PosologyService = function(context) {
         },
 
         createPosology : function(data) {
-            if (!data.DrugId) {
-                throw ErrorFactory.make('Posology requires a drug reference', 400);
-            }
-
+            data = sanitizePosologyInput(data);
             data.startDate = data.startDate || new Date();
             data.PatientId = context.patient;
 
@@ -30,14 +44,11 @@ var PosologyService = function(context) {
         },
 
         updatePosology : function(id, data) {
-            if (!data.DrugId) {
-                throw ErrorFactory.make('Posology requires a drug reference', 400);
-            }
-
+            data = sanitizePosologyInput(data);
             data.PatientId = context.patient;
 
-            return Posology.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }).then((posology) => {
-                return this.getPosology(posology.get('id'));
+            return Posology.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }).then(() => {
+                return this.getPosology(id);
             }); // TODO: update returns array of changed rows
         },
 

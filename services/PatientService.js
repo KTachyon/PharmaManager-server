@@ -9,6 +9,16 @@ var Drug = rekuire('models/Drug');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
+var sanitizePatientInput = function(data, id) {
+    return {
+        id : id,
+        name : data.name,
+        nif : data.nif,
+        sns : data.sns,
+        properties : data.properties
+    };
+};
+
 var PatientService = function(context) {
 
     var getTransaction = context.getTransaction;
@@ -45,18 +55,14 @@ var PatientService = function(context) {
         },
 
         createPatient : function(data) {
-            var self = this;
-
-            return Patient.create(data, { transaction : getTransaction() }).then(function(patient) {
-                return self.getPatient(patient.get('id'));
+            return Patient.create(sanitizePatientInput(data), { transaction : getTransaction() }).then((patient) => {
+                return this.getPatient(patient.get('id'));
             });
         },
 
         updatePatient : function(id, data) {
-            var self = this;
-
-            return Patient.update(data, { where : { id : id }, transaction : getTransaction() }).then(function() {
-                return self.getPatient(id);
+            return Patient.update(sanitizePatientInput(data, id), { where : { id : id }, transaction : getTransaction() }).then(() => {
+                return this.getPatient(id);
             }); // TODO: update returns array of changed rows
         },
 

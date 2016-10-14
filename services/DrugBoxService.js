@@ -7,6 +7,23 @@ var DrugStockService = rekuire('services/DrugStockService');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
+var sanitizeDrugBoxInput = function(data, id) {
+    if (!data.DrugId) {
+        throw ErrorFactory.make('Box requires a drug reference', 400);
+    }
+
+    return {
+        id : id,
+        expiresAt : data.expiresAt,
+        openedAt : data.openedAt,
+        unitCount : parseInt(data.unitCount),
+        brand : data.brand,
+        productionNumber : data.productionNumber,
+        properties : data.properties,
+        DrugId : data.DrugId
+    };
+};
+
 var DrugBoxService = function(context) {
 
     var getTransaction = context.getTransaction;
@@ -33,10 +50,7 @@ var DrugBoxService = function(context) {
         },
 
         createDrugBox : function(data) {
-            if (!data.DrugId) {
-                throw ErrorFactory.make('Posology requires a drug reference', 400);
-            }
-
+            data = sanitizeDrugBoxInput(data);
             data.PatientId = context.patient;
 
             return Promise.all([
@@ -48,10 +62,7 @@ var DrugBoxService = function(context) {
         },
 
         updateDrugBox : function(id, data) {
-            if (!data.DrugId) {
-                throw ErrorFactory.make('Posology requires a drug reference', 400);
-            }
-
+            data = sanitizeDrugBoxInput(data, id);
             data.PatientId = context.patient;
 
             return this.getDrugBox(id).then((currentDrugBox) => {
