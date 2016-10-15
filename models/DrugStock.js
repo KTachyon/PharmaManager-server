@@ -20,13 +20,23 @@ var DrugStock = db.define('DrugStock', {
         type : Sequelize.JSONB, // TODO: Register removed units / date, assumed box?
         allowNull : false,
         defaultValue : []
-    }
+    },
+    DrugId : {
+		type : Sequelize.UUID,
+		allowNull : false,
+		unique : 'pposology_unique_drug_patient'
+	},
+	PatientId : {
+		type : Sequelize.UUID,
+		allowNull : false,
+		unique : 'pposology_unique_drug_patient'
+	}
 });
 
-Drug.hasMany(DrugStock);
-Patient.hasMany(DrugStock);
+Drug.hasMany(DrugStock, { foreignKey : 'DrugId' });
+Patient.hasMany(DrugStock, { foreignKey : 'PatientId' });
 
-DrugStock.belongsTo(Drug);
-DrugStock.belongsTo(Patient);
+DrugStock.belongsTo(Drug, { foreignKey : 'DrugId' });
+DrugStock.belongsTo(Patient, { foreignKey : 'PatientId' });
 
 module.exports = DrugStock;

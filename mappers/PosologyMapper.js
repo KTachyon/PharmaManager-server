@@ -28,6 +28,7 @@ var PosologyMapper = function() {
                 timeRange: posology.get('timeRange'),
                 intakeTimes: posology.get('intakeTimes'),
                 intakeQuantity: posology.get('intakeQuantity'),
+                cancelled : posology.get('cancelled'),
                 properties: posology.get('properties')
             };
 

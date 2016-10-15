@@ -54,6 +54,20 @@ var PosologyService = function(context) {
 
         deletePosology : function(id) {
             return Posology.destroy({ where : { PatientId : context.patient, id : id }, transaction : getTransaction() });  // TODO: update returns deleted rows
+        },
+
+        cancelPosology : function(id) {
+            return Posology.find({ where : { PatientId : context.patient, id : id, cancelled : null }, transaction : getTransaction() }).then((posology) => {
+                posology.set('cancelled', new Date());
+                return posology.save({ transaction : getTransaction() });
+            });
+        },
+
+        uncancelPosology : function(id) {
+            return Posology.find({ where : { PatientId : context.patient, id : id, cancelled : { $ne : null } }, transaction : getTransaction() }).then((posology) => {
+                posology.set('cancelled', null);
+                return posology.save({ transaction : getTransaction() });
+            });
         }
     };
 

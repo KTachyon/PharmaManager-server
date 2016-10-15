@@ -25,6 +25,14 @@ var PosologysMiddleware = function() {
 
         deletePosology: function(request) {
             return new PosologyService(request.context).deletePosology(request.params.id).thenReturn({});
+        },
+
+        cancelPosology : function(request) {
+            return new PosologyService(request.context).cancelPosology(request.params.id).thenReturn({});
+        },
+
+        uncancelPosology : function(request) {
+            return new PosologyService(request.context).uncancelPosology(request.params.id).thenReturn({});
         }
     };
 

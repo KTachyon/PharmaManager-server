@@ -9,6 +9,18 @@ var DrugStockMiddleware = function() {
             return new DrugStockService(request.context).getAllDrugStock().then(function(drugStock) {
                 return DrugStockMapper.map(drugStock);
             });
+        },
+
+        getStockReport: function(request) {
+            return new DrugStockService(request.context).getStockReport();
+        },
+
+        weeklyStockUpdate : function(request) {
+            return new DrugStockService(request.context).weeklyStockUpdate();
+        },
+
+        manualStockUpdate : function(request) {
+            return new DrugStockService(request.context).manualStockUpdate(request.body.DrugId, request.body.PatientId, request.body.amount, 'manual stock update');
         }
     };
 

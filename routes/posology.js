@@ -10,4 +10,7 @@ PosologysRouter.put('/:id', Transactional(PosologyMiddleware.updatePosology));
 PosologysRouter.post('/', Transactional(PosologyMiddleware.createPosology));
 PosologysRouter.delete('/:id', Transactional(PosologyMiddleware.deletePosology));
 
+PosologysRouter.put('/:id/cancel', Transactional(PosologyMiddleware.cancelPosology));
+PosologysRouter.put('/:id/uncancel', Transactional(PosologyMiddleware.uncancelPosology));
+
 module.exports = PosologysRouter;

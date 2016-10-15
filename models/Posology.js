@@ -35,20 +35,32 @@ var Posology = db.define('Posology', {
 		allowNull : true
 	},
 	cancelled : {
-		type : Sequelize.BOOLEAN,
-		defaultValue : false,
-		allowNull : false
+		type : Sequelize.DATE,
+		allowNull : true,
+		unique : 'pposology_unique_drug_patient_cancelled'
 	},
 	properties : {
 		type : Sequelize.JSONB
+	},
+	DrugId : {
+		type : Sequelize.UUID,
+		allowNull : false,
+		unique : 'pposology_unique_drug_patient_cancelled'
+	},
+	PatientId : {
+		type : Sequelize.UUID,
+		allowNull : false,
+		unique : 'pposology_unique_drug_patient_cancelled'
 	}
 });
 
-// These will be the primary unique key, no need to define a unique constraint
-Drug.hasMany(Posology);
-Patient.hasMany(Posology);
+// TODO: Drug-Patient pair should be unique!!!
 
-Posology.belongsTo(Drug);
-Posology.belongsTo(Patient);
+// These will be the primary unique key, no need to define a unique constraint
+Drug.hasMany(Posology, { foreignKey : 'DrugId' });
+Patient.hasMany(Posology, { foreignKey : 'PatientId' });
+
+Posology.belongsTo(Drug, { foreignKey : 'DrugId' });
+Posology.belongsTo(Patient, { foreignKey : 'PatientId' });
 
 module.exports = Posology;
