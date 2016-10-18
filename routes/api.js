@@ -10,6 +10,7 @@ router.use(APIMiddleware.transaction);
 
 router.use('/patients', rekuire('routes/patients'));
 router.use('/drugs', rekuire('routes/drugs'));
+router.use('/stock', rekuire('routes/drugStock'));
 
 router.use(APIMiddleware.unhandledRequest);
 

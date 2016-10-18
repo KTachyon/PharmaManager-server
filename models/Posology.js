@@ -36,7 +36,7 @@ var Posology = db.define('Posology', {
 	cancelled : {
 		type : Sequelize.DATE,
 		allowNull : true,
-		unique : 'pposology_unique_drug_patient_cancelled'
+		unique : 'posology_unique_drug_patient_cancelled'
 	},
 	properties : {
 		type : Sequelize.JSONB
@@ -44,12 +44,12 @@ var Posology = db.define('Posology', {
 	DrugId : {
 		type : Sequelize.UUID,
 		allowNull : false,
-		unique : 'pposology_unique_drug_patient_cancelled'
+		unique : 'posology_unique_drug_patient_cancelled'
 	},
 	PatientId : {
 		type : Sequelize.UUID,
 		allowNull : false,
-		unique : 'pposology_unique_drug_patient_cancelled'
+		unique : 'posology_unique_drug_patient_cancelled'
 	}
 });
 

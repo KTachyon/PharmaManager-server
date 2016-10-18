@@ -23,33 +23,33 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
             });
         },
 
+        createDrugStockIfNotExists : function(patientID, drugID) {
+            return DrugStock.findOrCreate({
+                where : { PatientId : patientID, DrugId : drugID },
+                defaults : { unitCount : 0 },
+                transaction : getTransaction()
+            });
+        },
+
         updateStockFor : function(patientID, drugID, amount, reason) {
             amount = parseInt(amount);
 
             return DrugStock.find({ where : { PatientId : patientID, DrugId : drugID }, transaction : getTransaction() }).then((stock) => {
-                if (stock) {
-                    var log = stock.get('log') || [];
-                    log.push({ reason : reason, time : new Date(), change: amount });
-
-                    stock.set('unitCount', stock.get('unitCount') + amount);
-                    stock.set('log', log);
-
-                    if (stock.get('unitCount') < 0) {
-                        throw ErrorFactory.make('There is no stock available to fulfill order (' + patientID + ', ' + drugID + ', ' + amount +')', 400);
-                    }
-
-                    return stock.save({ transaction : getTransaction() });
+                if (!stock) {
+                    throw ErrorFactory.make('Stock not found', 404);
                 }
 
-                if (amount < 0) {
+                var log = stock.get('log') || [];
+                log.push({ reason : reason, time : new Date(), change: amount });
+
+                stock.set('unitCount', stock.get('unitCount') + amount);
+                stock.set('log', log);
+
+                if (stock.get('unitCount') < 0) {
                     throw ErrorFactory.make('There is no stock available to fulfill order (' + patientID + ', ' + drugID + ', ' + amount +')', 400);
                 }
 
-                return DrugStock.create({
-                    PatientId : patientID,
-                    DrugId : drugID,
-                    unitCount : amount
-                }, { transaction : getTransaction() });
+                return stock.save({ transaction : getTransaction() });
             });
         },
 
@@ -119,7 +119,7 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
             var configurationWeeks = weeks || 1;
             var intakeDictionary = {};
 
-            return Posology.findAll({ where : { cancelled : false }, transaction : getTransaction() }).then((allPosologies) => {
+            return Posology.findAll({ where : { cancelled : null }, transaction : getTransaction() }).then((allPosologies) => {
                 var stockQuery = _.map(allPosologies, (posology) => {
                     var weeklyIntake = this.stockRequiredForAWeek(posology);
 
@@ -132,8 +132,10 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     };
                 });
 
-                return DrugStock.findAll({ where : { $or : stockQuery }, transaction : getTransaction() });
+                return DrugStock.findAll({ where : { $or : stockQuery }, limit: 10, transaction : getTransaction() });
             }).then((insufficientStocks) => {
+                console.log('found insufficientStocks:', insufficientStocks.length);
+
                 return _.map(insufficientStocks, (stock) => {
                     return {
                         PatientId : stock.get('PatientId'),

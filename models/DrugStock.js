@@ -14,7 +14,8 @@ var DrugStock = db.define('DrugStock', {
     },
     unitCount : {
         type : Sequelize.INTEGER,
-        allowNull : false
+        allowNull : false,
+        validate : { min : 0 }
     },
     log : {
         type : Sequelize.JSONB, // TODO: Register removed units / date, assumed box?
@@ -24,12 +25,12 @@ var DrugStock = db.define('DrugStock', {
     DrugId : {
 		type : Sequelize.UUID,
 		allowNull : false,
-		unique : 'pposology_unique_drug_patient'
+		unique : 'posology_unique_drug_patient'
 	},
 	PatientId : {
 		type : Sequelize.UUID,
 		allowNull : false,
-		unique : 'pposology_unique_drug_patient'
+		unique : 'posology_unique_drug_patient'
 	}
 });
 

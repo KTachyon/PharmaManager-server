@@ -3,6 +3,8 @@ var Posology = rekuire('models/Posology');
 var Drug = rekuire('models/Drug');
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
+var DrugStockService = rekuire('services/DrugStockService');
+
 var sanitizePosologyInput = function(data, id) {
     if (!data.DrugId) {
         throw ErrorFactory.make('Posology requires a drug reference', 400);
@@ -38,7 +40,10 @@ var PosologyService = function(context) {
             data.startDate = data.startDate || new Date();
             data.PatientId = context.patient;
 
-            return Posology.create(data, { transaction : getTransaction() }).then((posology) => {
+            return Promise.all([
+                Posology.create(data, { transaction : getTransaction() }),
+                new DrugStockService(context).createDrugStockIfNotExists(context.patient, data.DrugId)
+            ]).spread((posology) => {
                 return this.getPosology(posology.get('id'));
             });
         },
@@ -47,7 +52,10 @@ var PosologyService = function(context) {
             data = sanitizePosologyInput(data);
             data.PatientId = context.patient;
 
-            return Posology.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }).then(() => {
+            return Promise.all([
+                Posology.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }),
+                new DrugStockService(context).createDrugStockIfNotExists(context.patient, data.DrugId)
+            ]).then(() => {
                 return this.getPosology(id);
             }); // TODO: update returns array of changed rows
         },

@@ -3,6 +3,7 @@ var Patient = rekuire('models/Patient');
 var Drug = rekuire('models/Drug');
 
 var Posology = rekuire('models/Posology');
+var DrugStock = rekuire('models/DrugStock');
 
 var _ = require('lodash');
 var Promise = require('bluebird');
@@ -37,7 +38,7 @@ function generateDrugs(array) {
 }
 
 function generatePosologies(patients, drugs) {
-    var posologies = _.reduce(patients, (memo, patient) => {
+    var pAndS = _.reduce(patients, (memo, patient) => {
         var numberOfPosologiesForPatient = randomNumber(3, 9);
         var currentDrugs = drugs;
 
@@ -67,19 +68,25 @@ function generatePosologies(patients, drugs) {
                 intake.push(1);
             }
 
-            memo.push({
+            memo.posologies.push({
                 DrugId : drug.get('id'),
                 PatientId : patient.get('id'),
                 startDate : new Date(),
                 scheduleType : scheduleType,
                 intake : intake
             });
+
+            memo.stocks.push({
+                DrugId : drug.get('id'),
+                PatientId : patient.get('id'),
+                unitCount : 0
+            });
         }
 
         return memo;
-    }, []);
+    }, { posologies : [], stocks : [] });
 
-    return Posology.bulkCreate(posologies);
+    return Promise.all([ Posology.bulkCreate(pAndS.posologies), DrugStock.bulkCreate(pAndS.stocks) ]);
 }
 
 module.exports = function() {
