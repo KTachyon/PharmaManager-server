@@ -28,6 +28,7 @@ var Drug = db.define('Drug', {
 		type : Sequelize.JSONB
 	}
 }, {
+    paranoid : true,
     setterMethods : {
         name : function(name) {
             this.setDataValue('name', name);

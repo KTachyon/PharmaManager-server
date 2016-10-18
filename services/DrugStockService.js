@@ -5,11 +5,12 @@ var Posology = rekuire('models/Posology');
 var Drug = rekuire('models/Drug');
 var Patient = rekuire('models/Patient');
 
+var moment = require('moment');
 var _ = require('lodash');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
 
-var DrugStockService = function(context) {
+var DrugStockService = function(context) { // TODO: Account for schedule type
 
     var getTransaction = context.getTransaction;
 
@@ -53,9 +54,28 @@ var DrugStockService = function(context) {
         },
 
         stockRequiredForAWeek : function(posology) {
-            var required = posology.get('intakeQuantity') * _.reduce(posology.get('intakeTimes'), (memo, isIntakeTime) => {
-                return memo + (isIntakeTime ? 1 : 0);
-            }, 0);
+            var required = 0;
+
+            if (posology.get('scheduleType') === 'DAILY') {
+                required =  _.reduce(posology.get('intake'), (memo, intake) => {
+                    return memo + (intake || 0);
+                }, 0);
+
+                required = required * 7;
+            } else if (posology.get('scheduleType') === 'WEEKLY') {
+                required =  _.reduce(posology.get('intake'), (memo, intake) => {
+                    return memo + (intake || 0);
+                }, 0);
+            } else {
+                var startMoment = moment(posology.get('startDate'));
+                var nowMoment = moment();
+
+                startMoment.month(nowMoment.month()); // Match month week
+
+                if (startMoment.weekYear() === moment().weekYear()) {
+                    required = posology.get('intake')[0];
+                }
+            }
 
             return Math.ceil(required);
         },
@@ -76,7 +96,6 @@ var DrugStockService = function(context) {
                         });
 
                         var weeklyIntake = this.stockRequiredForAWeek(posology);
-
 
                         var log = stock.get('log') || [];
                         log.push({ reason : 'weekly stock update', time : new Date(), change : -weeklyIntake });

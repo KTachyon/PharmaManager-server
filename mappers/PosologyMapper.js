@@ -25,9 +25,9 @@ var PosologyMapper = function() {
                 drug: DrugMapper.map(posology.Drug),
                 PatientID: posology.get('PatientId'),
                 startDate: posology.get('posologyDate'),
-                timeRange: posology.get('timeRange'),
-                intakeTimes: posology.get('intakeTimes'),
-                intakeQuantity: posology.get('intakeQuantity'),
+                discontinueAt: posology.get('discontinueAt'),
+                scheduleType : posology.get('scheduleType'),
+                intake: posology.get('intake'),
                 cancelled : posology.get('cancelled'),
                 properties: posology.get('properties')
             };

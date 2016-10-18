@@ -12,8 +12,8 @@ var sanitizePosologyInput = function(data, id) {
         id : id,
         startDate : data.startDate,
         discontinueAt : data.discontinueAt,
-        intakeTimes : data.intakeTimes, // TODO: Validate array of 4 booleans
-        intakeQuantity : parseFloat(data.intakeQuantity),
+        scheduleType : data.scheduleType,
+        intake : data.intake, // TODO: Parse intake?
         notes : data.notes,
         properties : data.properties,
         DrugId : data.DrugId

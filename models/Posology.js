@@ -20,15 +20,14 @@ var Posology = db.define('Posology', {
 		type : Sequelize.DATE,
 		allowNull : true // false if no date limit exists (chronical)
 	},
-	intakeTimes : {
+	scheduleType : {
+		type : Sequelize.ENUM('DAILY', 'WEEKLY', 'MONTHLY'),
+		allowNull: false
+	},
+	intake : {
 		type : Sequelize.JSONB,
 		allowNull : false,
-		defaultValue : [ false, false, false, false ] // Breakfast, Lunch, Snack, Diner
-	},
-	intakeQuantity : {
-		type : Sequelize.FLOAT, // half to multiple pills?
-		allowNull : false,
-		defaultValue : 1
+		defaultValue : []
 	},
 	notes : {
 		type : Sequelize.TEXT,
