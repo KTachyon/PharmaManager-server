@@ -1,28 +1,28 @@
 module.exports = {
-    getDatabaseURL : function() {
+    getDatabaseURL: function() {
         return 'postgresql://user:pass@localhost:5432/dbname';
     },
 
-    getLogLevel : function() {
+    getLogLevel: function() {
         return 'DEBUG';
     },
 
-    getServerPort : function() {
+    getServerPort: function() {
         return 3000;
     },
 
-    getAPIBasePath : function() {
+    getAPIBasePath: function() {
         return '/api';
     },
 
-    getCrossdomainHeaders : function() {
+    getCrossdomainHeaders: function() {
         return {
-        	'Access-Control-Allow-Origin' : function(request) {
-        		return request.get('origin'); // Since we are using credentials, we can only return a single origin here! Use this to filter the allowed origins.
-        	},
-        	'Access-Control-Allow-Credentials' : true,
-            'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept, JITT-SESSION-TOKEN',
-            'Access-Control-Allow-Methods' : 'GET, OPTIONS, PUT, POST, DELETE',
+            'Access-Control-Allow-Origin': function(request) {
+                return request.get('origin'); // Since we are using credentials, we can only return a single origin here! Use this to filter the allowed origins.
+            },
+            'Access-Control-Allow-Credentials': true,
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, JITT-SESSION-TOKEN',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS, PUT, POST, DELETE',
             'Access-Control-Max-Age': 86400
         };
     }
