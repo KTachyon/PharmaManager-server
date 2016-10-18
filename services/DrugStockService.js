@@ -132,7 +132,7 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     };
                 });
 
-                return DrugStock.findAll({ where : { $or : stockQuery }, limit: 10, transaction : getTransaction() });
+                return DrugStock.findAll({ where : { $or : stockQuery }, transaction : getTransaction() });
             }).then((insufficientStocks) => {
                 console.log('found insufficientStocks:', insufficientStocks.length);
 
@@ -161,8 +161,8 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
 
                 return Promise.all([
                     errors,
-                    Drug.findAll({ where : { id : ids.DrugIDs }, transaction : getTransaction() }),
-                    Patient.findAll({ where : { id : ids.PatientIDs }, transaction : getTransaction() })
+                    Drug.findAll({ where : { id : ids.DrugIDs }, attributes : ['id', 'name', 'dose', 'unit'], transaction : getTransaction() }),
+                    Patient.findAll({ where : { id : ids.PatientIDs }, attributes : ['id', 'name'], transaction : getTransaction() })
                 ]);
             }).spread((errors, drugs, patients) => {
                 _.each(errors, (error) => {
