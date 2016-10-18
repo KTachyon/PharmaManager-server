@@ -1,5 +1,5 @@
 {
-  "name": "medi-tablet",
+  "name": "pharma-manager-server",
   "version": "1.0.0",
   "description": "Pill box organizer for mutiple patients",
   "main": "index.js",
