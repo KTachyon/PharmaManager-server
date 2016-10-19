@@ -7,6 +7,7 @@ var databaseOptions = {
 	dialect:  'postgres',
 	protocol: 'postgres',
 	native: true,
+	paranoid : true,
 	//maxConcurrentQueries: 100, // (default: 50)
 	//pool: { maxConnections: 5, maxIdleTime: 30}, // use pooling in order to reduce db connection overload and to increase speed
 	logging: function(message) { logger.info(message); },

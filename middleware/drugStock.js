@@ -20,7 +20,7 @@ var DrugStockMiddleware = function() {
         },
 
         manualStockUpdate : function(request) {
-            return new DrugStockService(request.context).manualStockUpdate(request.body.DrugId, request.body.PatientId, request.body.amount, 'manual stock update');
+            return new DrugStockService(request.context).updateStockFor(request.body.DrugId, request.body.amount, 'manual stock update');
         }
     };
 

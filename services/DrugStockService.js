@@ -31,10 +31,10 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
             });
         },
 
-        updateStockFor : function(patientID, drugID, amount, reason) {
+        updateStockFor : function(drugID, amount, reason) {
             amount = parseInt(amount);
 
-            return DrugStock.find({ where : { PatientId : patientID, DrugId : drugID }, transaction : getTransaction() }).then((stock) => {
+            return DrugStock.find({ where : { PatientId : context.patient, DrugId : drugID }, transaction : getTransaction() }).then((stock) => {
                 if (!stock) {
                     throw ErrorFactory.make('Stock not found', 404);
                 }
@@ -46,7 +46,7 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                 stock.set('log', log);
 
                 if (stock.get('unitCount') < 0) {
-                    throw ErrorFactory.make('There is no stock available to fulfill order (' + patientID + ', ' + drugID + ', ' + amount +')', 400);
+                    throw ErrorFactory.make('There is no stock available to fulfill order (' + context.patient + ', ' + drugID + ', ' + amount +')', 400);
                 }
 
                 return stock.save({ transaction : getTransaction() });

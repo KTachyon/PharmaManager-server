@@ -55,11 +55,11 @@ var DrugBoxService = function(context) {
 
             return Promise.all([
                 DrugBox.create(data, { transaction : getTransaction() }),
-                new DrugStockService(context).updateStockFor(data.PatientId, data.DrugId, data.unitCount)
+                new DrugStockService(context).updateStockFor(data.DrugId, data.unitCount)
             ]).spread((drugBox) => {
                 return Promise.all([
                     this.getDrugBox(drugBox.get('id')),
-                    new DrugStockService(context).updateStockFor(data.PatientId, data.DrugId, data.unitCount, 'box ' + drugBox.get('id') + ' was added')
+                    new DrugStockService(context).updateStockFor(data.DrugId, data.unitCount, 'box ' + drugBox.get('id') + ' was added')
                 ]);
             }).spread((drugBox) => {
                 return drugBox;
@@ -75,7 +75,7 @@ var DrugBoxService = function(context) {
 
                 return Promise.all([
                     DrugBox.update(data, { where : { PatientId : context.patient, id : id }, transaction : getTransaction() }),
-                    new DrugStockService(context).updateStockFor(data.PatientId, data.DrugId, unitDiff, 'box ' + id + ' was updated')
+                    new DrugStockService(context).updateStockFor(data.DrugId, unitDiff, 'box ' + id + ' was updated')
                 ]);
             }).then(() => {
                 return this.getDrugBox(id);
@@ -88,7 +88,7 @@ var DrugBoxService = function(context) {
 
                 return Promise.all([
                     DrugBox.destroy({ where : { PatientId : context.patient, id : id }, transaction : getTransaction() }),
-                    new DrugStockService(context).updateStockFor(currentDrugBox.get('PatientId'), currentDrugBox.get('DrugId'), unitDiff, 'box ' + id + ' was removed')
+                    new DrugStockService(context).updateStockFor(currentDrugBox.get('DrugId'), unitDiff, 'box ' + id + ' was removed')
                 ]);
             });
         }
