@@ -1,6 +1,7 @@
 var rekuire = require('rekuire');
 var express = require('express');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var path = require('path');
 
 var morgan = require('morgan');
@@ -36,6 +37,7 @@ readdirPromise(normalizedPath).then(function(models) {
 	var app = express();
 
 	app.use(bodyParser.json());
+	app.use(cookieParser());
 
 	app.use(morgan('common'));
 

@@ -30,7 +30,6 @@ var Patient = db.define('Patient', {
 		type : Sequelize.JSONB
 	}
 }, {
-    paranoid : true,
     setterMethods : {
         name : function(name) {
             this.setDataValue('name', name);

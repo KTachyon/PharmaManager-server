@@ -17,11 +17,6 @@ var DrugStock = db.define('DrugStock', {
         allowNull : false,
         validate : { min : 0 }
     },
-    log : {
-        type : Sequelize.JSONB, // TODO: Register removed units / date, assumed box?
-        allowNull : false,
-        defaultValue : []
-    },
     DrugId : {
 		type : Sequelize.UUID,
 		allowNull : false,

@@ -4,6 +4,7 @@ var Drug = rekuire('models/Drug');
 
 var Posology = rekuire('models/Posology');
 var DrugStock = rekuire('models/DrugStock');
+var User = rekuire('models/User');
 
 var _ = require('lodash');
 var Promise = require('bluebird');
@@ -94,6 +95,7 @@ module.exports = function() {
     var drugs = rekuire('generator/drugs');
 
     return Promise.all([
+        User.create({ email : 'tiago@ftc.pt', password: 'nopass', name: 'Tiago Matos' }),
         Patient.bulkCreate( generatePatients(names) ),
         Drug.bulkCreate( generateDrugs(drugs) )
     ]).then(() => {

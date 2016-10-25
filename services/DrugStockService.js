@@ -4,11 +4,14 @@ var Posology = rekuire('models/Posology');
 
 var Drug = rekuire('models/Drug');
 var Patient = rekuire('models/Patient');
+var StockLog = rekuire('models/StockLog');
 
 var moment = require('moment');
 var _ = require('lodash');
 
 var ErrorFactory = rekuire('utils/ErrorFactory');
+
+var WeeklyStockUpdate = rekuire('models/WeeklyStockUpdate');
 
 var DrugStockService = function(context) { // TODO: Account for schedule type
 
@@ -39,18 +42,19 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     throw ErrorFactory.make('Stock not found', 404);
                 }
 
-                var log = stock.get('log') || [];
-                log.push({ reason : reason, time : new Date(), change: amount });
-
                 stock.set('unitCount', stock.get('unitCount') + amount);
-                stock.set('log', log);
 
                 if (stock.get('unitCount') < 0) {
                     throw ErrorFactory.make('There is no stock available to fulfill order (' + context.patient + ', ' + drugID + ', ' + amount +')', 400);
                 }
 
-                return stock.save({ transaction : getTransaction() });
-            });
+                var log = { UserId : context.user.get('id'), reason : reason, changes : [ { StockId : stock.get('id'), amount : amount } ] };
+
+                return Promise.all([
+                    stock.save({ transaction : getTransaction() }),
+                    StockLog.create(log, { transaction : getTransaction() })
+                ]);
+            }).spread((stock) => { return stock; });
         },
 
         stockRequiredForAWeek : function(posology) {
@@ -81,7 +85,16 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
         },
 
         weeklyStockUpdate : function() {
-            return this.buildStockReport().then((errors) => {
+            var startDate = moment().startOf('week');
+            var endDate = moment().endOf('week');
+
+            return WeeklyStockUpdate.find({ where : { createdAt : { $between : [startDate, endDate] } }, transaction : getTransaction }).then((result) => {
+                if (result.length) {
+                    throw ErrorFactory.make('Weekly medication was already subtracted from stock for this week', 400);
+                }
+
+                return this.buildStockReport();
+            }).then((errors) => {
                 if (errors.length) {
                     throw ErrorFactory.make('Insufficient Stock', 400);
                 }
@@ -90,27 +103,28 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     Posology.findAll({ where : { cancelled : false }, transaction : getTransaction() }),
                     DrugStock.findAll({ transaction : getTransaction() })
                 ]).spread((allPosologies, allDrugStocks) => {
-                    var dirtyDrugStocks = _.reduce(allPosologies, (memo, posology) => {
+                    var stocksAndLog = _.reduce(allPosologies, (memo, posology) => {
                         var stock = _.find(allDrugStocks, (drugStock) => {
                             return drugStock.get('PatientId') === posology.get('PatientId') && drugStock.get('DrugId') === posology.get('DrugId');
                         });
 
                         var weeklyIntake = this.stockRequiredForAWeek(posology);
 
-                        var log = stock.get('log') || [];
-                        log.push({ reason : 'weekly stock update', time : new Date(), change : -weeklyIntake });
-
                         stock.set('unitCount', stock.get('unitCount') - weeklyIntake);
-                        stock.set('log', log);
 
-                        memo.push(stock);
+                        memo.log.changes.push({ StockId : stock.get('id'), amount : -weeklyIntake });
+                        memo.stock.push(stock);
 
                         return memo;
-                    }, []);
+                    }, { stocks : [], log : { reason : 'weekly stock update', changes : [] } });
 
-                    return Promise.all( _.map(dirtyDrugStocks, (stock) => {
-                        return stock.save({ transaction : getTransaction() });
-                    }));
+                    return Promise.all(
+                        _.map(stocksAndLog.stocks, (stock) => {
+                            return stock.save({ transaction : getTransaction() });
+                        })
+                        .concat(WeeklyStockUpdate.create({}, { transaction : getTransaction() }))
+                        .concat(StockLog.create(stocksAndLog.log, { transaction : getTransaction() }))
+                    );
                 });
             });
         },
@@ -175,7 +189,28 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     });
                 });
 
-                return errors;
+                let stockErrorByPatientMap = _.reduce(errors, (memo, stock) => {
+                    let item = {
+                        DrugId : stock.DrugId,
+                        Drug : stock.Drug,
+                        stock : stock.stock,
+                        required : stock.required
+                    };
+
+                    if (memo[stock.PatientId]) {
+                        memo[stock.PatientId].stocks.push(item);
+                    } else {
+                        memo[stock.PatientId] = {
+                            PatientId : stock.PatientId,
+                            Patient : stock.Patient,
+                            stocks : [ item ]
+                        };
+                    }
+
+                    return memo;
+                }, {});
+
+                return _.map(stockErrorByPatientMap, (value) => value);
             });
         }
     };
