@@ -1,12 +1,10 @@
-var crypto = require('crypto');
+var rekuire = require('rekuire');
+var configuration = rekuire('configs/configuration');
 var passwordRegex = /^[!-~]{8,50}$/;
 
 var PasswordUtils = {
     hash : function(password) {
-        var hash = crypto.createHash('sha512'); // TODO: Maybe add salt
-        hash.update(password);
-
-        return hash.digest('hex');
+        return configuration.hashPassowrd({ password : password });
     },
 
     isValid : function(password) {

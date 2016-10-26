@@ -1,3 +1,5 @@
+var crypto = require('crypto');
+
 module.exports = {
     getDatabaseURL: function() {
         return 'postgresql://user:pass@localhost:5432/dbname';
@@ -20,6 +22,13 @@ module.exports = {
             value : 1,
             unit: 'day'
         };
+    },
+
+    hashPasswordFunction(data) {
+        var hash = crypto.createHash('sha512'); // TODO: Maybe add salt
+        hash.update(data.password);
+
+        return hash.digest('hex');
     },
 
     getCrossdomainHeaders: function() {

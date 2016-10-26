@@ -50,7 +50,7 @@ var PatientService = function(context) {
                     return patient.get('id');
                 });
 
-                return Patient.findAll({ where : { id : ids }, include : this.includes(), transaction : getTransaction() });
+                return Patient.findAll({ where : { id : ids }, transaction : getTransaction() });
             });
         },
 
