@@ -4,6 +4,7 @@
   "description": "Pill box organizer for mutiple patients",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "test": "./node_modules/.bin/mocha --recursive --reporter spec"
   },
   "author": "Tiago Fael Matos",
