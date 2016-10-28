@@ -43,6 +43,7 @@ readdirPromise(normalizedPath).then(function(models) {
 
 	// Setup routes (base entry point)
 	app.use(configuration.getAPIBasePath(), rekuire('routes/api'));
+	app.use('/', express.static('public'));
 
 	// Start listening
 	app.listen(configuration.getServerPort());
