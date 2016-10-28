@@ -189,8 +189,8 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     });
                 });
 
-                let stockErrorByPatientMap = _.reduce(errors, (memo, stock) => {
-                    let item = {
+                var stockErrorByPatientMap = _.reduce(errors, (memo, stock) => {
+                    var item = {
                         DrugId : stock.DrugId,
                         Drug : stock.Drug,
                         stock : stock.stock,
