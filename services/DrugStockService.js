@@ -85,10 +85,10 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
         },
 
         weeklyStockUpdate : function() {
-            var startDate = moment().startOf('week');
-            var endDate = moment().endOf('week');
+            var startDate = moment().startOf('week').toDate();
+            var endDate = moment().endOf('week').toDate();
 
-            return WeeklyStockUpdate.find({ where : { createdAt : { $between : [startDate, endDate] } }, transaction : getTransaction }).then((result) => {
+            return WeeklyStockUpdate.findAll({ where : { createdAt : { $between : [startDate, endDate] } }, transaction : getTransaction() }).then((result) => {
                 if (result.length) {
                     throw ErrorFactory.make('Weekly medication was already subtracted from stock for this week', 400);
                 }
