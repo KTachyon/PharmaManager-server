@@ -53,10 +53,7 @@ var DrugBoxService = function(context) {
             data = sanitizeDrugBoxInput(data);
             data.PatientId = context.patient;
 
-            return Promise.all([
-                DrugBox.create(data, { transaction : getTransaction() }),
-                new DrugStockService(context).updateStockFor(data.DrugId, data.unitCount)
-            ]).spread((drugBox) => {
+            return DrugBox.create(data, { transaction : getTransaction() }).then((drugBox) => {
                 return Promise.all([
                     this.getDrugBox(drugBox.get('id')),
                     new DrugStockService(context).updateStockFor(data.DrugId, data.unitCount, 'box ' + drugBox.get('id') + ' was added')
