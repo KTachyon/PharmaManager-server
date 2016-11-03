@@ -93,7 +93,7 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
                     throw ErrorFactory.make('Weekly medication was already subtracted from stock for this week', 400);
                 }
 
-                return this.buildStockReport();
+                return this.buildStockReport(1);
             }).then((errors) => {
                 if (errors.length) {
                     throw ErrorFactory.make('Insufficient Stock', 400);
@@ -130,7 +130,7 @@ var DrugStockService = function(context) { // TODO: Account for schedule type
         },
 
         buildStockReport : function(weeks) {
-            var configurationWeeks = weeks || 1;
+            var configurationWeeks = weeks || 4;
             var intakeDictionary = {};
 
             return Posology.findAll({ where : { cancelled : null }, transaction : getTransaction() }).then((allPosologies) => {
